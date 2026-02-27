@@ -13,7 +13,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "https://github.com/vltpkg/action-query-deps.git"
+    "url": "https://github.com/vltpkg/query-deps.git"
   },
   "keywords": ["vlt", "github-action", "security", "dependencies", "malware", "outdated"],
   "author": "vltpkg",
