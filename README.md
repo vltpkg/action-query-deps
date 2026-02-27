@@ -315,7 +315,7 @@ See [CONTRIBUTING.md](CONTRIBUTING.md) for development setup and guidelines.
 
 ## License
 
-This action is licensed under the [Blue Oak Model License 1.0.0](LICENSE).
+This action is licensed under the [MIT License](LICENSE).
 
 ---
 
