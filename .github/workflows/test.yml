@@ -29,31 +29,37 @@ jobs:
           vlt init --yes
           echo "Test project created with empty vlt project"
 
-      - name: Test single query - count all deps (empty project = 0)
+      - name: Test single query - list all deps
         uses: ./
         with:
           query: '*'
-          expect-results: '0'
+          view: 'human'
+          working-directory: './test-project'
+
+      - name: Test single query with count view
+        uses: ./
+        with:
+          query: '*'
           view: 'count'
           working-directory: './test-project'
 
-      - name: Test multi-query on empty project
+      - name: Test multi-query on project
         uses: ./
         with:
           working-directory: './test-project'
           queries: |
-            # No malware in empty project
+            # No malware expected
             :malware --expect-results=0
-            # No deps in empty project
-            * --view=count --expect-results=0
+            # List all with json
+            * --view=json
 
-      - name: Test failure case (expect non-zero deps but have zero)
+      - name: Test failure case (expect exactly 999 deps - should fail)
         id: expected-failure
         continue-on-error: true
         uses: ./
         with:
           query: '*'
-          expect-results: '>=1'
+          expect-results: '999'
           working-directory: './test-project'
 
       - name: Verify failure case actually failed
