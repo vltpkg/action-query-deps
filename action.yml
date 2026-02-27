@@ -1,0 +1,44 @@
+name: Query Deps
+description: Run vlt dependency queries as CI gates — check for malware, outdated deps, license compliance, and more.
+author: vltpkg
+
+branding:
+  icon: search
+  color: purple
+
+inputs:
+  query:
+    description: 'Single vlt query selector (e.g. ":malware")'
+    required: false
+  queries:
+    description: |
+      Multiple vlt query selectors, one per line. Each line can include flags like --expect-results.
+      Example:
+        :malware --expect-results=0
+        :outdated --view=json
+    required: false
+  expect-results:
+    description: 'Expected result count for single query (e.g. "0", ">5", "<=10")'
+    required: false
+  view:
+    description: 'Output format: human, json, mermaid, count'
+    required: false
+  scope:
+    description: 'Scope query selector for top-level packages'
+    required: false
+  target:
+    description: 'Target query selector (alternative to positional query)'
+    required: false
+  working-directory:
+    description: 'Working directory for running vlt query (defaults to repository root)'
+    required: false
+
+outputs:
+  results:
+    description: 'JSON array of query results'
+  passed:
+    description: 'Whether all queries passed their expectations'
+
+runs:
+  using: "node20"
+  main: "dist/index.js"

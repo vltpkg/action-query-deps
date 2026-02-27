@@ -1,0 +1,108 @@
+name: Integration Tests
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+jobs:
+  integration-test:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js 22
+        uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+
+      - name: Setup vlt
+        uses: vltpkg/setup-vlt@v1
+
+      - name: Create test project
+        run: |
+          mkdir test-project
+          cd test-project
+          vlt init --yes
+          
+          # Add some dependencies for testing
+          vlt add lodash@4.17.20
+          vlt add chalk@4.0.0
+          
+          # Add a dependency with known issues for testing (if available)
+          # Note: This might not work in all cases, but that's OK for testing
+          echo "Test project created"
+
+      - name: Test single query - count direct deps
+        uses: ./
+        with:
+          query: ':root > *'
+          view: 'count'
+          working-directory: './test-project'
+
+      - name: Test single query with expectation
+        uses: ./
+        with:
+          query: ':root > *'
+          expect-results: '>=1'
+          view: 'count'
+          working-directory: './test-project'
+
+      - name: Test multi-query
+        uses: ./
+        with:
+          working-directory: './test-project'
+          queries: |
+            :root > * --view=count --expect-results=>=1
+            * --view=json
+
+      - name: Test query that should pass (no malware expected)
+        uses: ./
+        with:
+          query: ':malware'
+          expect-results: '0'
+          working-directory: './test-project'
+
+      - name: Test failure case (expect this to fail)
+        id: expected-failure
+        continue-on-error: true
+        uses: ./
+        with:
+          query: ':root > *'
+          expect-results: '0'
+          working-directory: './test-project'
+
+      - name: Verify failure case actually failed
+        if: steps.expected-failure.outcome != 'failure'
+        run: |
+          echo "::error::Expected the previous step to fail, but it passed"
+          exit 1
+
+      - name: Test with missing working directory (should use current)
+        uses: ./
+        with:
+          query: 'package.json'
+          view: 'count'
+
+  test-without-vlt:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Test without vlt installed (should fail)
+        id: no-vlt
+        continue-on-error: true
+        uses: ./
+        with:
+          query: ':malware'
+
+      - name: Verify vlt check failed
+        if: steps.no-vlt.outcome != 'failure'
+        run: |
+          echo "::error::Expected action to fail when vlt is not installed"
+          exit 1
