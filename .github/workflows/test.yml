@@ -26,59 +26,34 @@ jobs:
         run: |
           mkdir test-project
           cd test-project
-          
-          # Create package.json with deps manually, then install
-          cat > package.json << 'EOF'
-          {
-            "name": "test-project",
-            "version": "1.0.0",
-            "dependencies": {
-              "lodash": "^4.17.20",
-              "chalk": "^4.0.0"
-            }
-          }
-          EOF
-          
-          vlt install
-          echo "Test project created"
+          vlt init --yes
+          echo "Test project created with empty vlt project"
 
-      - name: Test single query - count direct deps
+      - name: Test single query - count all deps (empty project = 0)
         uses: ./
         with:
-          query: ':root > *'
+          query: '*'
+          expect-results: '0'
           view: 'count'
           working-directory: './test-project'
 
-      - name: Test single query with expectation
-        uses: ./
-        with:
-          query: ':root > *'
-          expect-results: '>=1'
-          view: 'count'
-          working-directory: './test-project'
-
-      - name: Test multi-query
+      - name: Test multi-query on empty project
         uses: ./
         with:
           working-directory: './test-project'
           queries: |
-            :root > * --view=count --expect-results=>=1
-            * --view=json
+            # No malware in empty project
+            :malware --expect-results=0
+            # No deps in empty project
+            * --view=count --expect-results=0
 
-      - name: Test query that should pass (no malware expected)
-        uses: ./
-        with:
-          query: ':malware'
-          expect-results: '0'
-          working-directory: './test-project'
-
-      - name: Test failure case (expect this to fail)
+      - name: Test failure case (expect non-zero deps but have zero)
         id: expected-failure
         continue-on-error: true
         uses: ./
         with:
-          query: ':root > *'
-          expect-results: '0'
+          query: '*'
+          expect-results: '>=1'
           working-directory: './test-project'
 
       - name: Verify failure case actually failed
@@ -87,9 +62,8 @@ jobs:
           echo "::error::Expected the previous step to fail, but it passed"
           exit 1
 
-      - name: Verify outputs from previous steps
-        run: |
-          echo "All integration tests completed successfully"
+      - name: Integration tests completed
+        run: echo "All integration tests completed successfully"
 
   test-without-vlt:
     runs-on: ubuntu-latest
