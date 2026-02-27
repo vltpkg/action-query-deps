@@ -3,8 +3,8 @@
 A GitHub Action for querying dependencies with vlt. Gate your CI pipeline by checking for malware, outdated packages, license compliance, and more using powerful CSS-like selectors.
 
 ![Query Deps Action](https://img.shields.io/badge/Query%20Deps-by%20vlt-purple)
-[![CI](https://github.com/vltpkg/query-deps/actions/workflows/ci.yml/badge.svg)](https://github.com/vltpkg/query-deps/actions/workflows/ci.yml)
-[![Integration Tests](https://github.com/vltpkg/query-deps/actions/workflows/test.yml/badge.svg)](https://github.com/vltpkg/query-deps/actions/workflows/test.yml)
+[![CI](https://github.com/vltpkg/action-query-deps/actions/workflows/ci.yml/badge.svg)](https://github.com/vltpkg/action-query-deps/actions/workflows/ci.yml)
+[![Integration Tests](https://github.com/vltpkg/action-query-deps/actions/workflows/test.yml/badge.svg)](https://github.com/vltpkg/action-query-deps/actions/workflows/test.yml)
 
 ## Quick Start
 
@@ -18,7 +18,7 @@ A GitHub Action for querying dependencies with vlt. Gate your CI pipeline by che
   uses: vltpkg/setup-vlt@v1
 
 - name: Query dependencies
-  uses: vltpkg/query-deps@v1
+  uses: vltpkg/action-query-deps@v1
   with:
     queries: |
       :malware --expect-results=0
@@ -42,7 +42,7 @@ A GitHub Action for querying dependencies with vlt. Gate your CI pipeline by che
 
 ```yaml
 - name: Security scan
-  uses: vltpkg/query-deps@v1
+  uses: vltpkg/action-query-deps@v1
   with:
     queries: |
       # Block any malware
@@ -59,7 +59,7 @@ A GitHub Action for querying dependencies with vlt. Gate your CI pipeline by che
 
 ```yaml
 - name: License compliance
-  uses: vltpkg/query-deps@v1
+  uses: vltpkg/action-query-deps@v1
   with:
     queries: |
       # No copyleft licenses allowed
@@ -76,7 +76,7 @@ A GitHub Action for querying dependencies with vlt. Gate your CI pipeline by che
 
 ```yaml
 - name: Dependency health
-  uses: vltpkg/query-deps@v1
+  uses: vltpkg/action-query-deps@v1
   with:
     queries: |
       # Check for outdated packages
@@ -93,7 +93,7 @@ A GitHub Action for querying dependencies with vlt. Gate your CI pipeline by che
 
 ```yaml
 - name: Workspace analysis
-  uses: vltpkg/query-deps@v1
+  uses: vltpkg/action-query-deps@v1
   with:
     queries: |
       # Count workspace packages
@@ -110,7 +110,7 @@ A GitHub Action for querying dependencies with vlt. Gate your CI pipeline by che
 
 ```yaml
 - name: Specific package checks
-  uses: vltpkg/query-deps@v1
+  uses: vltpkg/action-query-deps@v1
   with:
     queries: |
       # Ensure lodash is present
@@ -185,7 +185,7 @@ For complete selector documentation, see [vlt selector docs](https://docs.vlt.sh
 
 ```yaml
 - name: License audit
-  uses: vltpkg/query-deps@v1
+  uses: vltpkg/action-query-deps@v1
   with:
     queries: |
       # Get all licenses for review
@@ -204,7 +204,7 @@ For complete selector documentation, see [vlt selector docs](https://docs.vlt.sh
 
 ```yaml
 - name: Security & quality gate
-  uses: vltpkg/query-deps@v1
+  uses: vltpkg/action-query-deps@v1
   with:
     queries: |
       # Security checks
@@ -224,7 +224,7 @@ For complete selector documentation, see [vlt selector docs](https://docs.vlt.sh
 
 ```yaml
 - name: Workspace health
-  uses: vltpkg/query-deps@v1
+  uses: vltpkg/action-query-deps@v1
   with:
     queries: |
       # Workspace structure
@@ -284,7 +284,7 @@ jobs:
         run: vlt install
       
       - name: Security audit
-        uses: vltpkg/query-deps@v1
+        uses: vltpkg/action-query-deps@v1
         with:
           queries: |
             # Block malware and vulnerabilities
@@ -300,7 +300,7 @@ jobs:
             :root > * --view=count --expect-results=<=25
       
       - name: Generate dependency report
-        uses: vltpkg/query-deps@v1
+        uses: vltpkg/action-query-deps@v1
         with:
           queries: |
             # Detailed reports (won't fail CI)
